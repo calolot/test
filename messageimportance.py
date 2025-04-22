@@ -64,12 +64,13 @@ plt.ylim([0, 1])
 plt.legend(loc='lower right')
 plt.show()
 
-model.save(os.path.join(CurrentDirectory,"AIModel.keras"))
-with open(os.path.join(CurrentDirectory,'Tokenizer.pickle'), 'wb') as handle:
+model.save(os.path.join(CurrentDirectory,"AIModel1.keras"))
+with open(os.path.join(CurrentDirectory,'Tokenizer1.pickle'), 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Save label encoder
-with open(os.path.join(CurrentDirectory,'LabelEncoder.pickle'), 'wb') as handle:
+with open(os.path.join(CurrentDirectory,'LabelEncoder1.pickle'), 'wb') as handle:
     pickle.dump(label_encode, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+#Eto itsura ng pag Train. Need ko to i automate once na maayos na program

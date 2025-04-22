@@ -7,27 +7,41 @@ import pandas as pd
 import csv as csv
 import pickle
 import os
+import sys
 
-CurrentDirectory = os.getcwd()
+
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS  # PyInstaller temporary folder
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+    
+
+# Use the CSV path
+csv_path = os.path.join(os.path.abspath("."), "data/schedule.csv")
+sched = pd.DataFrame(columns=["message", "priority", "schedule", "datecreated"])
+if os.path.exists(csv_path):
+    sched = pd.read_csv(csv_path)
+    print("Loaded existing schedule.csv")
+else:
+    sched.to_csv(csv_path, index=False)
+    print("schedule.csv not found. Created an empty CSV.")
+
 
 # Load the saved model
-model = load_model(os.path.join(CurrentDirectory, 'AIModel.keras'))  # Replace with your model file path
+model = load_model(os.path.join(os.path.abspath("."), 'AIModel.keras'))  # Replace with your model file path
 
 # Load the saved tokenizer
-with open(os.path.join(CurrentDirectory, 'Tokenizer.pickle'), 'rb') as handle:
+with open(os.path.join(os.path.abspath("."), 'Tokenizer.pickle'), 'rb') as handle:
     tokenizer = pickle.load(handle)
 
 # Load the saved label encoder
-with open(os.path.join(CurrentDirectory, 'LabelEncoder.pickle'), 'rb') as handle:
+with open(os.path.join(os.path.abspath("."), 'LabelEncoder.pickle'), 'rb') as handle:
     label_encoder = pickle.load(handle)
 
-if os.path.exists(os.path.join(CurrentDirectory, "schedule.csv")):
-    sched = pd.read_csv("schedule.csv")
-    print("Loaded existing schedule.csv")
-else:
-    emptycsv = pd.DataFrame(columns=["message", "priority", "schedule", "datecreated"])
-    emptycsv.to_csv(os.path.join(CurrentDirectory, "schedule.csv"), index=False)
-    print("schedule.csv not found. Created an empty CSV.")
+
 
 # Function to predict the priority of a message
 def predict_priority(message):
@@ -69,10 +83,10 @@ def appendsched(message, priority):
     valid_time = check_valid_time(valid_date)
 
     # Corrected date format for `now` and `valid_time`
-    formatted_valid_time = valid_time.strftime("%B-%d-%Y %I:%M %p")  # e.g., "April-14-2025 10:00 AM"
-    formatted_now = (now.strftime("%m-%d-%Y") + ":" + now.strftime("%H-%M-%S")) # e.g., "04-12-2025"
+    formatted_valid_time = valid_time.strftime("%B-%d-%Y %I:%M %p")  # ex. "April-14-2025 10:00 AM"
+    formatted_now = (now.strftime("%m-%d-%Y") + ":" + now.strftime("%H-%M-%S")) # ex. "04-12-2025"
 
-    with open("schedule.csv", 'a+', newline="") as newobj:
+    with open(csv_path, 'a+', newline="") as newobj:
         writer = csv.writer(newobj)
         writer.writerow([message, priority, formatted_valid_time, formatted_now])
 
@@ -94,7 +108,7 @@ def reqsched():
     
 
 def checksched():
-    sched = pd.read_csv("schedule.csv")
+    sched = pd.read_csv(csv_path)
     if sched.empty:
         print("No Schedules Loaded.")
         return
@@ -128,7 +142,6 @@ while True:
         break
     elif user_message.lower() == 'other':
         print("Entering ")
-
     
 
 

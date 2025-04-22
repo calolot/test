@@ -5,7 +5,7 @@ a = Analysis(
     ['testai.py'],
     pathex=[],
     binaries=[],
-    datas=[('messageprioritymodel2.keras', '.'), ('tokenizer2.pickle', '.'), ('label_encoder2.pickle', '.'), ('schedule.csv', '.')],
+    datas=[('Tokenizer.pickle', '.'), ('LabelEncoder.pickle', '.'), ('AIModel.keras', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
